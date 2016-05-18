@@ -1,0 +1,3 @@
+$ crontab -e
+
+*/1  *   *   *   *   /usr/local/bin/php /home/USERNAMEHERE/public_html/asktoby/tobycrawler29.php > /dev/null 2>&1

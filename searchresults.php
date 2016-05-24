@@ -37,7 +37,7 @@
 	$queryTextArray = explode(" ", $queryText);
 	$numberOfKeywords = count($queryTextArray);
 	
-	$MySQL = new mysqli('localhost', 'mdotchri_dba', 'Milf15milf', 'mdotchri_asktobyDatabase');
+	$MySQL = new mysqli('localhost', 'ADMIN', 'PASSWORD', 'DATABASE');
 	for ($i = 0; $i < $numberOfKeywords; $i++) {
 	    $SQL = "SELECT domain FROM keywordTable WHERE (keywordOne = '{$queryTextArray[$i]}' OR 
 		                                               keywordTwo = '{$queryTextArray[$i]}' OR

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1 user-scalable=no">
+<link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+<style>
+    @font-face {
+	    font-family: klavika;
+		src: url(klavika.otf);
+	}
+    @media (min-width: 751px) {
+    body { 
+        background-image: url('space.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center; 
+		background-size: 100%;
+    }
+	h1 {
+		margin-top: 15%;
+		font-size: 4em;
+	}
+    #askTobyFont {
+		font-family: klavika;
+		color: white;
+		background-color: rgba(0, 0, 0, 0.6);
+		padding: 1em;
+    }
+    h2 {
+        font-family: klavika;
+        color: white;
+        font-size: 9em;
+        margin-left: 45%;
+        margin-top: 13%;
+    }
+    #keywords {
+        width: 425px;
+        height: 50px;
+    }
+    #lucky {
+        height: 56px;
+        width: 150px;
+    }
+    #input-div {
+        margin-top: -6.75%;
+        margin-left: 45%;
+    }
+    img {
+        width: 33%;
+        margin-left: 5%;
+        margin-top: -27%;
+        position: absolute;
+    }
+    }
+    @media (max-width: 750px) {
+        body { 
+            visibility: hidden;
+        }
+    }
+</style>
+</head>
+<body>
+<h2>Ask Toby!</h2>
+<div id="input-div"><form method="POST" action="searchresults.php"><input type="text" id="keywords" name="queryText"><input type="submit" id="lucky" value="Feeling Lucky?"></form></div>
+<img src="toby2.png">
+<script>
+    if (screen.width < 751) {
+        alert("I haven't made asktoby.php mobile friendly yet. So if you're seeing this JavaScript alert, join my open source project and make it mobile friendly!");
+    }
+</script>
+</body>
+</html>

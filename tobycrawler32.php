@@ -1,5 +1,6 @@
-<?php $MySQL = new mysqli('localhost', 'ADMIN', 'PASSWORD', 'DATABASE');
+<?php $MySQL = new mysqli('localhost', 'USERNAME', 'PASSWORD', 'DATABASE');
     $startTime = time();
+	$pages = 6; // Number of Pages to Crawl
     function curlMultiRequest($urls, $options) {
         $ch = array();
         $results = array();
@@ -25,15 +26,14 @@
         curl_multi_close($mh);
         return $results;
     }
-
     $SQL = "SELECT * FROM locationTable;";
     $output = $MySQL->query($SQL);
     while ($record = $output->fetch_assoc()){
         $lastIdScraped = $record['lastIdScraped'];
     }
     $scrapeNextId = $lastIdScraped;
-    
-    for ($a = 0; $a < 20; $a++) {
+	    
+    for ($a = 0; $a < $pages; $a++) {
         $scrapeNextId++;
         $SQL = "SELECT domain FROM domainTable WHERE id = $scrapeNextId;";
         $output = $MySQL->query($SQL);
@@ -56,7 +56,7 @@
      *
      */
     for ($z = 0; $z <= 3; $z++) {
-        for ($c = 0; $c < 20; $c++) {
+        for ($c = 0; $c < $pages; $c++) {
             preg_match('/<title>(.*)<\/title>/i', $domainData[$z][$c], $title);
             $titles[$z][$c] = $title[1];
         }
@@ -66,66 +66,24 @@
                 $links[$z][$e][$f] = $hyperlink[0][$f];
             }
         }
-		/*
-        for ($g = 0; $g < count($titles[$z]); $g++) {
-            echo "<h2>LINKS FOR {$titles[$z][$g]} :</h2>";
-            for ($h = 0; $h < count($links[$z][$g]); $h++) {
-                echo " * {$links[$z][$g][$h]} <br>";
-            }
-        }
-		*/
 	}
 	
     $endTime = time();
     $elapsedTime = $endTime - $startTime;
-    //echo "TOTAL TIME ELAPSED: $elapsedTime SECONDS <br>";
-    $fractionalTime = $elapsedTime / 20;
-    //echo "CRAWL TIME PER URL: $fractionalTime SECONDS <br>";
+    echo "TOTAL TIME ELAPSED: $elapsedTime SECONDS <br>";
+    $fractionalTime = $elapsedTime / $pages;
+    echo "CRAWL TIME PER URL: $fractionalTime SECONDS <br>";
 	
-    // CODE BELOW FOR TESTING PURPOSES ONLY
-    /*
-	echo "<h2>\$titles[0]:</h2>";
-	for ($x = 0; $x < count($titles[0]); $x++) {
-	    echo "{$titles[0][$x]} <br>";
-	}
-	
-	echo "<h2>\$titles[1]:</h2>";
-	for ($x = 0; $x < count($titles[1]); $x++) {
-	    echo "{$titles[1][$x]} <br>";
-	}
-	
-	echo "<h2>\$titles[2]:</h2>";
-	for ($x = 0; $x < count($titles[2]); $x++) {
-	    echo "{$titles[2][$x]} <br>";
-	}
-	
-	echo "<h2>\$titles[3]:</h2>";
-	for ($x = 0; $x < count($titles[3]); $x++) {
-	    echo "{$titles[3][$x]} <br>";
-	}
 
-        echo "<h1>LINKS:</h1>";
-        for ($i = 0; $i < count($links); $i++) {
-            for ($j = 0; $j < count($links[$i]); $j++) {
-                for ($k = 0; $k < count($links[$i][$j]); $k++) {
-                    echo "{$links[$i][$j][$k]} <br>";
-                }
-            }
-        }
-    */
-
-for ($i = 0; $i < 20; $i++) {
-
+for ($i = 0; $i < $pages; $i++) {
     $prefixZero = count($links[0][$i]);
     $prefixOne = count($links[1][$i]);
     $prefixTwo = count($links[2][$i]);
     $prefixThree = count($links[3][$i]);
-
     $prefixSortArray[0] = $prefixZero;
     $prefixSortArray[1] = $prefixOne;
     $prefixSortArray[2] = $prefixTwo;
     $prefixSortArray[3] = $prefixThree;
-
     // BUBBLE SORT $prefixSortArray IN ORDER TO DETERMINE
     // WHICH PREFIX+DOMAIN RETURNS THE MOST LINKS WHEN SCRAPED.
     // THIS SHOULD SERVE AS A RESONABLE WAY TO DETERMINE WHICH
@@ -156,7 +114,6 @@ for ($i = 0; $i < 20; $i++) {
         }
     }
     $mostLinks = $prefixSortArray[3];
-
     switch ($mostLinks) {
         case $prefixZero:
             $bestLinks[$i] = $links[0][$i];
@@ -176,18 +133,9 @@ for ($i = 0; $i < 20; $i++) {
             break;
     }
 }
-    // LOOP BELOW FOR TESTING PURPOSES ONLY
-    /*
-    for ($i = 0; $i < 20; $i++) {
-        echo "<h2>{$bestTitles[$i]} </h2>";
-        for ($j = 0; $j < count($bestLinks[$i]); $j++) {
-            echo "{$bestLinks[$i][$j]} <br>";
-        }
-    }
-    */
 
     // $bestLinks[0-19][variableAmount]
-    for ($i = 0; $i < 20; $i++) {
+    for ($i = 0; $i < $pages; $i++) {
         for ($j = 1; $j < count($bestLinks[$i]); $j++) {
             for ($k = 0; $k < $j; $k++) {
                 if ($bestLinks[$i][$j] == $bestLinks[$i][$k]) {
@@ -196,20 +144,9 @@ for ($i = 0; $i < 20; $i++) {
             }
         }
     }
- 
-    // CODE BELOW FOR TESTING PURPOSES ONLY
-	/*
-    for ($i = 0; $i < 20; $i++) {
-        echo "<h2>{$bestTitles[$i]} </h2>";
-        for ($j = 0; $j < count($bestLinks[$i]); $j++) {
-            if ($bestLinks[$i][$j] == "DUPLICATE") { continue; };
-            echo "{$bestLinks[$i][$j]} <br>";
-        }
-    }
-	*/
 	
 	// MARK DOMAINS AS 'SCRAPED' ON DATABASE
-	for ($i = 0; $i < 20; $i++) {
+	for ($i = 0; $i < $pages; $i++) {
 	    $SQL = "UPDATE domainTable SET scraped=\"true\" WHERE domain = \"{$domainNoPrefix[$i]}\";";
 	    $MySQL->query($SQL);
 	}
@@ -221,7 +158,7 @@ for ($i = 0; $i < 20; $i++) {
         $zId = $record['maxid'];
     }
 	$zId++;
-	for ($i = 0; $i < 20; $i++) {
+	for ($i = 0; $i < $pages; $i++) {
 	    for ($j = 0; $j < count($bestLinks[$i]); $j++) {
 	        $SQL = "SELECT * FROM domainTable WHERE domain = \"{$bestLinks[$i][$j]}\";";
 	        $output = $MySQL->query($SQL);
@@ -236,18 +173,18 @@ for ($i = 0; $i < 20; $i++) {
 	
 	
 	// MARK CRAWLED DOMAINS AS 'SCRAPED' ON THE domainTable
-	for ($i = 0; $i < 20; $i++) {
+	for ($i = 0; $i < $pages; $i++) {
 	    $SQL = "UPDATE domainTable SET scraped=\"true\" WHERE domain = \"{$domainNoPrefix[$i]}\";";
 	    $MySQL->query($SQL);
 	}
 	
-	for ($i = 0; $i < 20; $i++) {
+	for ($i = 0; $i < $pages; $i++) {
 	    $titleArray = explode(" ", $bestTitles[$i]);
 		$SQL = "INSERT INTO keywordTable VALUES (\"{$domainNoPrefix[$i]}\", \"{$bestTitles[$i]}\", \"{$titleArray[0]}\", \"{$titleArray[1]}\", \"{$titleArray[2]}\", \"{$titleArray[3]}\", \"{$titleArray[4]}\", \"{$titleArray[5]}\", \"{$titleArray[6]}\", \"{$titleArray[7]}\", \"{$titleArray[8]}\", \"{$titleArray[9]}\", \"{$titleArray[10]}\", \"{$titleArray[11]}\", \"{$titleArray[12]}\");";
 	    $MySQL->query($SQL);
 	}
 	
-	$newLastIdScraped = $lastIdScraped + 20;
+	$newLastIdScraped = $lastIdScraped + $pages;
 	$SQL = "UPDATE locationTable SET lastIdScraped = \"$newLastIdScraped\";";
 	$MySQL->query($SQL);
 	

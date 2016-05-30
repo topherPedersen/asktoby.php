@@ -1,3 +1,0 @@
-$ crontab -e
-
-*  *   *   *   *   php /home/USERNAMEHERE/public_html/asktoby/tobycrawler32.php > /dev/null 2>&1

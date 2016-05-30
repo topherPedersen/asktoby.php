@@ -1,6 +1,6 @@
-<?php $MySQL = new mysqli('localhost', 'USERNAME', 'PASSWORD', 'DATABASE');
+<?php $MySQL = new mysqli('localhost', 'ADMIN', 'PASSWORD', 'DATABASE');
     $startTime = time();
-	$pages = 6; // Number of Pages to Crawl
+	$pages = 20; // Number of Pages to Crawl
     function curlMultiRequest($urls, $options) {
         $ch = array();
         $results = array();

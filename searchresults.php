@@ -33,15 +33,18 @@
 </head>
 <body>
 <?php
-    $queryText = $_POST['queryText'];
-	$queryTextArray = explode(" ", $queryText);
-	$numberOfKeywords = count($queryTextArray);
-	for ($x = 0; $x < $numberOfKeywords; $x++) {
-	    $queryTextArray[$x] = filter_var($queryTextArray[$x], FILTER_SANITIZE_STRING);
-	}
+
+	
 	
 	$MySQL = new mysqli('localhost', 'USERNAME', 'PASSWORD', 'DATABASE');
+	$queryText = $_POST['queryText'];
+	$queryTextClean = preg_replace("/[^a-zA-Z0-9\s]/", "", $queryText); // strip potentially malicious code
+	$queryTextArray = explode(" ", $queryTextClean);
+	$numberOfKeywords = count($queryTextArray);
 	for ($i = 0; $i < $numberOfKeywords; $i++) {
+	    if ($queryTextArray[$i] == "") {
+	        continue;
+	    }
 	    $SQL = "SELECT domain FROM keywordTable WHERE (keywordOne = '{$queryTextArray[$i]}' OR 
 		                                               keywordTwo = '{$queryTextArray[$i]}' OR
 													   keywordThree = '{$queryTextArray[$i]}' OR

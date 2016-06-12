@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<span id="sql"></span>
+<script>
+    var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+	/*
+	for (i = 1; i <= 25; i++) {
+	    document.getElementById("letters").innerHTML += alphabet[i];
+	}
+	*/
+	for (i = 0; i <= 25; i++) {
+	    document.getElementById("sql").innerHTML += "CREATE TABLE " + alphabet[i] + "DomainTable (id BIGINT(20), domain TEXT, scraped TEXT, valid TEXT ); <br>";
+		document.getElementById("sql").innerHTML += "CREATE TABLE " + alphabet[i] + "KeywordTable (domain TEXT, title TEXT, keywordOne TEXT,keywordTwo TEXT,keywordThree TEXT,keywordFour TEXT,keywordFive TEXT,keywordSix TEXT,keywordSeven TEXT,keywordEight TEXT,keywordNine TEXT,keywordTen TEXT,keywordEleven TEXT,keywordTwelve TEXT,keywordThirteen TEXT); <br>";
+		document.getElementById("sql").innerHTML += "CREATE TABLE " + alphabet[i] + "LocationTable ( lastIdScraped BIGINT(20) ); <br>";
+	}
+</script>
+</body>
+</html>
